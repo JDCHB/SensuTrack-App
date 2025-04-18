@@ -103,65 +103,48 @@
     }
 </script>
 
-<div class="container my-4 p-4 bg-white rounded shadow-lg">
-    <h2 class="text-center text-primary fw-bold mb-4">Reportes</h2>
+<div class="report-container">
+    <h2 class="report-title">Reportes</h2>
 
-    <div class="mb-4">
-        <select class="form-select form-select-lg" id="opcion" required>
+    <div class="report-section">
+        <select class="vibrant-select" id="opcion" required>
             <option value="1">Discapacitados</option>
             <option value="2">Usuarios</option>
             <option value="3">Otro</option>
         </select>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
-        <div>
-            <label for="desde_ciegos" class="form-label fw-semibold"
-                >Desde:</label
-            >
-            <input type="date" id="desde_ciegos" class="form-control" />
+    <div class="date-range">
+        <div class="date-input">
+            <label for="desde_ciegos" class="vibrant-label">Desde:</label>
+            <input type="date" id="desde_ciegos" class="vibrant-date" />
         </div>
-        <div>
-            <label for="hasta_ciegos" class="form-label fw-semibold"
-                >Hasta:</label
-            >
-            <input type="date" id="hasta_ciegos" class="form-control" />
+        <div class="date-input">
+            <label for="hasta_ciegos" class="vibrant-label">Hasta:</label>
+            <input type="date" id="hasta_ciegos" class="vibrant-date" />
         </div>
     </div>
 
-    <div class="text-center mb-4">
-        <button
-            type="button"
-            class="btn btn-primary btn-lg px-4"
-            on:click={generar}
-        >
-            <i class="fas fa-file-alt me-2"></i> Generar Reporte
+    <div class="report-action">
+        <button class="vibrant-button" on:click={generar}>
+            <i class="bi bi-file-earmark-text"></i> Generar Reporte
         </button>
     </div>
 </div>
 
 <!-- Mostrar Datos -->
-<div class="container py-4" id="MostrarReporte">
+<div class="report-results" id="MostrarReporte">
     {#if loading}
-        <div class="progress" style="height: 5px;">
-            <div
-                class="progress-bar progress-bar-striped progress-bar-animated"
-                role="progressbar"
-                aria-valuenow="100"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                style="width: 100%"
-            ></div>
+        <div class="vibrant-loader">
+            <div class="loader-bar"></div>
         </div>
     {:else if error}
-        <p class="text-danger text-center">Error: {error}</p>
+        <p class="error-message">Error: {error}</p>
     {:else if mostrarReporte}
-        <h3 class="mb-4 text-center text-secondary">
-            Discapacitados Registrados
-        </h3>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="table-light text-center">
+        <h3 class="results-title">Discapacitados Registrados</h3>
+        <div class="table-container">
+            <table class="vibrant-table">
+                <thead>
                     <tr>
                         <th>Id</th>
                         <th>Nombre</th>
@@ -181,52 +164,293 @@
                             <td>{todo.tipo_ceguera}</td>
                             <td>{todo.nombre_cuidador}</td>
                             <td>{todo.fecha}</td>
-                            <td>{todo.estado ? "Activo" : "Inactivo"}</td>
+                            <td>
+                                <span
+                                    class="status-{todo.estado
+                                        ? 'active'
+                                        : 'inactive'}"
+                                >
+                                    {todo.estado ? "Activo" : "Inactivo"}
+                                </span>
+                            </td>
                         </tr>
                     {/each}
                 </tbody>
             </table>
         </div>
-        <div class="text-center mt-4">
-            <button class="btn btn-success btn-lg px-4" on:click={exportarPDF}>
-                <i class="fas fa-download me-2"></i> Exportar como PDF
+        <div class="export-action">
+            <button class="export-button" on:click={exportarPDF}>
+                <i class="bi bi-download"></i> Exportar como PDF
             </button>
         </div>
     {/if}
 </div>
 
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+    rel="stylesheet"
+/>
+
 <style>
-    .container {
+    /* ESTILOS VIBRANTES PARA REPORTES */
+    .report-container {
         max-width: 960px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(110, 72, 170, 0.15);
     }
 
-    label {
+    .report-title {
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #6e48aa, #9d50bb);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .vibrant-select {
+        width: 100%;
+        padding: 1rem 1.2rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        background: #f8f9fa;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236e48aa'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .vibrant-select:focus {
+        border-color: #9d50bb;
+        box-shadow: 0 0 0 3px rgba(157, 80, 187, 0.2);
+        outline: none;
+        background-color: white;
+    }
+
+    .date-range {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .date-input {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .vibrant-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #5a5a5a;
+    }
+
+    .vibrant-date {
+        padding: 1rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    .vibrant-date:focus {
+        border-color: #9d50bb;
+        box-shadow: 0 0 0 3px rgba(157, 80, 187, 0.2);
+        outline: none;
+        background: white;
+    }
+
+    .report-action {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .vibrant-button {
+        background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(110, 72, 170, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .vibrant-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(110, 72, 170, 0.4);
+    }
+
+    .vibrant-button:active {
+        transform: translateY(-1px);
+    }
+
+    /* RESULTADOS */
+    .report-results {
+        max-width: 960px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(110, 72, 170, 0.15);
+    }
+
+    .vibrant-loader {
+        height: 5px;
+        background: #f0f0f0;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .loader-bar {
+        height: 100%;
+        width: 100%;
+        background: linear-gradient(90deg, #6e48aa, #9d50bb, #4776e6, #8e54e9);
+        background-size: 400% 400%;
+        animation: gradient 2s ease infinite;
+        border-radius: 5px;
+    }
+
+    @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .error-message {
+        text-align: center;
+        color: #ff4757;
+        font-weight: 500;
+        padding: 1rem;
+    }
+
+    .results-title {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #6e48aa;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .vibrant-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .vibrant-table thead {
+        background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+        color: white;
+    }
+
+    .vibrant-table th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .vibrant-table td {
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .vibrant-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .vibrant-table tbody tr:hover {
+        background-color: #f0e6ff;
+    }
+
+    .status-active {
+        color: #2ecc71;
         font-weight: 500;
     }
 
-    table {
-        font-size: 0.95rem;
+    .status-inactive {
+        color: #e74c3c;
+        font-weight: 500;
     }
 
-    button:focus {
-        box-shadow: 0 0 0 0.25rem rgba(90, 155, 255, 0.5);
+    .export-action {
+        text-align: center;
+        margin-top: 2rem;
     }
 
-    #MostrarReporte {
-        background-color: #f8f9fb;
-        border-radius: 12px;
-        margin-top: 30px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    .export-button {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    @media (max-width: 576px) {
-        h2,
-        h3 {
-            font-size: 1.4rem;
+    .export-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+    }
+
+    .export-button:active {
+        transform: translateY(-1px);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .date-range {
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
 
-        .btn {
-            font-size: 0.9rem;
+        .report-container,
+        .report-results {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+
+        .report-title,
+        .results-title {
+            font-size: 1.5rem;
+        }
+
+        .vibrant-button,
+        .export-button {
+            padding: 0.9rem 1.5rem;
+            font-size: 1rem;
         }
     }
 </style>
