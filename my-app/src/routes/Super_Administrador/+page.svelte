@@ -1,4 +1,5 @@
 <script>
+    // Mantengo exactamente los mismos imports y funciones del script original
     import RegistroUSUAdmin from "../../lib/components/Admin/RegistroUsu.svelte";
     import Reportes from "../../lib/components/Admin/Reportes.svelte";
     import RegistroGPS from "../../lib/components/Admin/RegistroGPS.svelte";
@@ -11,8 +12,9 @@
     import ModuloxRol from "$lib/components/Admin/ModuloxRol.svelte";
 
     let expandido = false;
-    let activeSection = "X"; // valor por defecto
+    let activeSection = "X";
     let registerLoader;
+    let menuAbierto = false;
 
     function showLoader() {
         registerLoader.style.display = "flex";
@@ -22,12 +24,8 @@
         registerLoader.style.display = "none";
     }
 
-    function expandirSidebar() {
-        expandido = true;
-    }
-
-    function colapsarSidebar() {
-        expandido = false;
+    function toggleMenu() {
+        menuAbierto = !menuAbierto;
     }
 
     function logout() {
@@ -35,105 +33,120 @@
         window.location.href = "/";
     }
 
-    // Acciones disponibles
+    // Acciones disponibles (igual que antes)
     function mostrarConfirmacionRegistroUsuario() {
         activeSection = "registro_usuario";
+        menuAbierto = false;
     }
     function mostrarConfirmacionReporte() {
         activeSection = "reportes";
+        menuAbierto = false;
     }
     function mostrarConfirmacionRegistroGPS() {
         activeSection = "registro_gps";
+        menuAbierto = false;
     }
     function mostrarTablaUsuarios() {
         activeSection = "tabla_usuarios";
+        menuAbierto = false;
     }
     function mostrarTablaCiegos() {
         activeSection = "tabla_discapacitados";
+        menuAbierto = false;
     }
     function mostrarRegistroRoles() {
         activeSection = "registro_roles";
+        menuAbierto = false;
     }
     function mostrarRegistroModulos() {
         activeSection = "registro_modulos";
+        menuAbierto = false;
     }
     function mostrarRegistroModuloxRol() {
         activeSection = "modulos_por_rol";
+        menuAbierto = false;
     }
     function mostrarTableroPowerBI() {
         activeSection = "tablero";
+        menuAbierto = false;
     }
     function mostrarHistorialUbicaciones() {
         activeSection = "historial_ubicaciones";
+        menuAbierto = false;
     }
 </script>
 
-<div class="layout">
-    <!-- Sidebar -->
-    <div
-        class="sidebar"
-        on:mouseenter={expandirSidebar}
-        on:mouseleave={colapsarSidebar}
-        role="navigation"
-    >
-        <div class="sidebar-header">
-            {#if expandido}
-                <h2>Super Admin</h2>
-            {:else}
-                <i class="bi bi-person-circle fs-3"></i>
-            {/if}
-        </div>
+<div class="mobile-layout">
+    <!-- Barra superior móvil -->
+    <header class="mobile-header">
+        <button
+            class="menu-button"
+            on:click={toggleMenu}
+            aria-label={menuAbierto ? "Cerrar menú" : "Abrir menú"}
+        >
+            <i class="bi bi-list"></i>
+        </button>
+        <h1>Admin</h1>
+        <div class="header-spacer"></div>
+    </header>
 
+    <!-- Menú lateral móvil -->
+    <div class="mobile-sidebar {menuAbierto ? 'open' : ''}">
         <nav>
             <button on:click={mostrarConfirmacionRegistroUsuario}>
                 <i class="bi bi-person-add"></i>
-                {#if expandido}<span>Registrar Usuario</span>{/if}
+                <span>Registrar Usuario</span>
             </button>
             <button on:click={mostrarConfirmacionReporte}>
                 <i class="bi bi-file-earmark-spreadsheet"></i>
-                {#if expandido}<span>Reportes</span>{/if}
+                <span>Reportes</span>
             </button>
             <button on:click={mostrarConfirmacionRegistroGPS}>
                 <i class="bi bi-geo-alt"></i>
-                {#if expandido}<span>Registrar GPS</span>{/if}
+                <span>Registrar GPS</span>
             </button>
             <button on:click={mostrarTablaUsuarios}>
                 <i class="bi bi-table"></i>
-                {#if expandido}<span>Tabla Usuarios</span>{/if}
+                <span>Tabla Usuarios</span>
             </button>
             <button on:click={mostrarTablaCiegos}>
                 <i class="bi bi-table"></i>
-                {#if expandido}<span>Tabla Discapacitados</span>{/if}
+                <span>Tabla Discapacitados</span>
             </button>
             <button on:click={mostrarRegistroRoles}>
                 <i class="bi bi-person-badge"></i>
-                {#if expandido}<span>Registrar Roles</span>{/if}
+                <span>Registrar Roles</span>
             </button>
             <button on:click={mostrarRegistroModulos}>
                 <i class="bi bi-stack"></i>
-                {#if expandido}<span>Registrar Módulos</span>{/if}
+                <span>Registrar Módulos</span>
             </button>
             <button on:click={mostrarRegistroModuloxRol}>
                 <i class="bi bi-shield-lock"></i>
-                {#if expandido}<span>Asignar Módulo</span>{/if}
+                <span>Asignar Módulo</span>
             </button>
             <button on:click={mostrarTableroPowerBI}>
                 <i class="bi bi-graph-up"></i>
-                {#if expandido}<span>Tablero</span>{/if}
+                <span>Tablero</span>
             </button>
             <button on:click={mostrarHistorialUbicaciones}>
                 <i class="bi bi-map"></i>
-                {#if expandido}<span>Ubicaciones</span>{/if}
+                <span>Ubicaciones</span>
             </button>
             <button on:click={logout} class="logout">
                 <i class="bi bi-power"></i>
-                {#if expandido}<span>Cerrar Sesión</span>{/if}
+                <span>Cerrar Sesión</span>
             </button>
         </nav>
     </div>
 
-    <!-- Contenido a la derecha -->
-    <main class="content">
+    {#if menuAbierto}
+        <button class="overlay" on:click={toggleMenu} aria-label="Cerrar menú"
+        ></button>
+    {/if}
+
+    <!-- Contenido principal -->
+    <main class="mobile-content">
         {#if activeSection === "X"}
             <div class="admin-welcome">
                 <h1>👋 ¡Bienvenido, Administrador!</h1>
@@ -148,41 +161,11 @@
                 on:showLoader={showLoader}
                 on:hideLoader={hideLoader}
             ></RegistroUSUAdmin>
-
-            <div class="loader-container" bind:this={registerLoader}>
-                <div class="loader-text">
-                    <span>S</span>
-                    <span>e</span>
-                    <span>n</span>
-                    <span>s</span>
-                    <span>u</span>
-                    <span>T</span>
-                    <span>r</span>
-                    <span>a</span>
-                    <span>c</span>
-                    <span>k</span>
-                </div>
-            </div>
         {:else if activeSection === "reportes"}
             <Reportes></Reportes>
         {:else if activeSection === "registro_gps"}
             <RegistroGPS on:showLoader={showLoader} on:hideLoader={hideLoader}
             ></RegistroGPS>
-
-            <div class="loader-container" bind:this={registerLoader}>
-                <div class="loader-text">
-                    <span>S</span>
-                    <span>e</span>
-                    <span>n</span>
-                    <span>s</span>
-                    <span>u</span>
-                    <span>T</span>
-                    <span>r</span>
-                    <span>a</span>
-                    <span>c</span>
-                    <span>k</span>
-                </div>
-            </div>
         {:else if activeSection === "tabla_usuarios"}
             <TablaUsuarios></TablaUsuarios>
         {:else if activeSection === "tabla_discapacitados"}
@@ -192,40 +175,11 @@
                 on:showLoader={showLoader}
                 on:hideLoader={hideLoader}
             ></RegistrarRoles>
-
-            <div class="loader-container" bind:this={registerLoader}>
-                <div class="loader-text">
-                    <span>S</span>
-                    <span>e</span>
-                    <span>n</span>
-                    <span>s</span>
-                    <span>u</span>
-                    <span>T</span>
-                    <span>r</span>
-                    <span>a</span>
-                    <span>c</span>
-                    <span>k</span>
-                </div>
-            </div>
         {:else if activeSection === "registro_modulos"}
             <RegistroModulos
                 on:showLoader={showLoader}
                 on:hideLoader={hideLoader}
             ></RegistroModulos>
-            <div class="loader-container" bind:this={registerLoader}>
-                <div class="loader-text">
-                    <span>S</span>
-                    <span>e</span>
-                    <span>n</span>
-                    <span>s</span>
-                    <span>u</span>
-                    <span>T</span>
-                    <span>r</span>
-                    <span>a</span>
-                    <span>c</span>
-                    <span>k</span>
-                </div>
-            </div>
         {:else if activeSection === "modulos_por_rol"}
             <ModuloxRol></ModuloxRol>
         {:else if activeSection === "tablero"}
@@ -233,27 +187,197 @@
         {:else if activeSection === "historial_ubicaciones"}
             <HistorialUbi></HistorialUbi>
         {/if}
+
+        <!-- Loader (se mantiene igual) -->
+        <div class="loader-container" bind:this={registerLoader}>
+            <div class="loader-text">
+                <span>S</span>
+                <span>e</span>
+                <span>n</span>
+                <span>s</span>
+                <span>u</span>
+                <span>T</span>
+                <span>r</span>
+                <span>a</span>
+                <span>c</span>
+                <span>k</span>
+            </div>
+        </div>
     </main>
 </div>
 
 <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
     rel="stylesheet"
 />
 
 <style>
-    /* Contenedor para el loader */
+    /* Estilos generales para móvil */
+    :global(body) {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-layout {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+        position: relative;
+        overflow: hidden;
+        background: #f8f9fa;
+    }
+
+    /* Barra superior - Colores vibrantes */
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+        color: white;
+        height: 60px;
+        box-shadow: 0 2px 10px rgba(110, 72, 170, 0.3);
+        z-index: 10;
+        position: relative;
+    }
+
+    .menu-button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        padding: 0.5rem 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .menu-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    .mobile-header h1 {
+        font-size: 1.4rem;
+        margin: 0;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-spacer {
+        flex: 1;
+    }
+
+    /* Menú lateral - Diseño moderno */
+    .mobile-sidebar {
+        position: fixed;
+        top: 60px;
+        left: -280px;
+        width: 280px;
+        height: calc(100vh - 60px);
+        background: linear-gradient(180deg, #4a00e0 0%, #8e2de2 100%);
+        color: white;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 20;
+        overflow-y: auto;
+        padding: 1rem 0;
+    }
+
+    .mobile-sidebar.open {
+        transform: translateX(280px);
+    }
+
+    .mobile-sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0 0.5rem;
+    }
+
+    .mobile-sidebar button {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 1rem;
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 8px;
+        text-align: left;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        margin: 0 0.5rem;
+    }
+
+    .mobile-sidebar button i {
+        margin-right: 1rem;
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .mobile-sidebar button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
+    }
+
+    .mobile-sidebar button:active {
+        transform: scale(0.98);
+    }
+
+    .mobile-sidebar .logout {
+        background: rgba(255, 75, 75, 0.2);
+        color: #ffd6d6;
+        margin-top: auto;
+    }
+
+    .mobile-sidebar .logout:hover {
+        background: rgba(255, 75, 75, 0.3);
+    }
+
+    /* Overlay */
+    .overlay {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 15;
+        border: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        backdrop-filter: blur(2px);
+        transition: opacity 0.3s ease;
+    }
+
+    /* Contenido principal - Fondo moderno */
+    .mobile-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1.2rem;
+        background: #f8f9fa;
+    }
+
+    /* Loader (se mantiene igual) */
     .loader-container {
-        position: absolute;
+        position: fixed; /* Usamos fixed para que se quede fijo en toda la pantalla */
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente */
-        display: none; /* Oculto por defecto */
+        background: rgba(0, 0, 0, 0.6); /* Fondo oscuro más intenso */
+        display: none;
         justify-content: center;
         align-items: center;
-        z-index: 100; /* Asegúrate de que esté encima de otros elementos */
+        z-index: 100;
+        backdrop-filter: blur(5px); /* Añadir desenfoque al fondo */
     }
 
     .loader-text {
@@ -261,7 +385,8 @@
         font-size: 48px;
         font-weight: bold;
         letter-spacing: 5px;
-        color: #007bff; /* Color azul principal */
+        color: white; /* Color blanco para mejorar la visibilidad */
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra para mejorar contraste */
         animation: fadeIn 1.5s infinite alternate;
     }
 
@@ -322,138 +447,73 @@
         }
     }
 
-    /*HASTA AQUI*/
-    .layout {
-        display: flex;
-        height: 100vh;
-        overflow: hidden;
-    }
-
-    .sidebar {
-        height: 100vh;
-        background-color: #1f2937;
-        color: #f9fafb;
-        width: 70px;
-        transition: width 0.3s ease;
-        overflow-y: auto; /* <-- scroll vertical cuando sea necesario */
-        overflow-x: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        padding: 1rem 0.5rem;
-        border-right: 1px solid #374151;
-    }
-
-    .sidebar:hover {
-        width: 240px;
-    }
-
-    .sidebar-header {
-        text-align: center;
-        margin-bottom: 1rem;
-        font-weight: bold;
-        color: #60a5fa;
-    }
-
-    /* Scrollbar moderno para el sidebar */
-    .sidebar::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .sidebar::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    .sidebar::-webkit-scrollbar-thumb {
-        background-color: #4b5563; /* gris suave */
-        border-radius: 4px;
-    }
-
-    .sidebar:hover::-webkit-scrollbar-thumb {
-        background-color: #9ca3af; /* gris claro en hover */
-    }
-
-    nav {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        flex: 1;
-    }
-
-    button {
-        background: none;
-        border: none;
-        color: inherit;
-        font: inherit;
-        padding: 0.75rem 1rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        cursor: pointer;
-        transition: background 0.2s ease;
-        border-radius: 0.5rem;
-    }
-
-    button:hover {
-        background-color: #374151;
-    }
-
-    button i {
-        font-size: 1.2rem;
-    }
-
-    button span {
-        white-space: nowrap;
-    }
-
-    .logout {
-        margin-top: auto;
-        color: #f87171;
-    }
-
-    .logout:hover {
-        background-color: #7f1d1d;
-        color: #fef2f2;
-    }
-
-    .content {
-        flex: 1;
-        padding: 2rem;
-        background: #eeaeca;
-        background: radial-gradient(
-            circle,
-            rgba(238, 174, 202, 1) 0%,
-            rgba(148, 187, 233, 1) 100%
-        );
-        overflow-y: auto;
-    }
-
-    .content h1 {
-        color: #111827;
-    }
-
-    /* VISTA ADMIN AL ENTRAR*/
-
+    /* Mensaje de bienvenida - Tarjeta moderna */
     .admin-welcome {
-        background-color: #ffffffcc;
-        border-radius: 1rem;
-        padding: 2rem;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        color: #1f2937;
-        max-width: 800px;
-        margin: auto;
+        background: white;
+        border-radius: 16px;
+        padding: 1.8rem;
+        box-shadow: 0 4px 20px rgba(110, 72, 170, 0.15);
+        margin: 1rem 0;
+        border: 1px solid rgba(110, 72, 170, 0.1);
         text-align: center;
     }
 
     .admin-welcome h1 {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-        color: #111827;
+        font-size: 1.7rem;
+        margin-bottom: 1.2rem;
+        color: #4a00e0;
+        background: linear-gradient(90deg, #6e48aa, #9d50bb);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
     }
 
     .admin-welcome .subtitle {
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-        color: #4b5563;
+        font-size: 1.05rem;
+        color: #5a5a5a;
+        line-height: 1.6;
+    }
+
+    /* Efectos hover para botones */
+    button {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    /* Ajustes para pantallas más grandes */
+    @media (min-width: 768px) {
+        .mobile-sidebar {
+            width: 300px;
+            left: -300px;
+            background: linear-gradient(180deg, #4a00e0 0%, #8e2de2 100%);
+        }
+
+        .mobile-sidebar.open {
+            transform: translateX(300px);
+        }
+
+        .admin-welcome {
+            padding: 2.5rem;
+            max-width: 650px;
+            margin: 2rem auto;
+        }
+
+        .mobile-content {
+            padding: 1.5rem 2rem;
+        }
+    }
+
+    /* Scrollbar personalizada */
+    .mobile-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .mobile-sidebar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .mobile-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
     }
 </style>
