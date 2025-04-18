@@ -177,34 +177,36 @@
     }
 </script>
 
-<div class="password-container">
-    <div class="password-card">
-        <div class="password-header">
-            <h2 class="password-title">Cambio de Contraseña</h2>
-            <p class="password-subtitle">
-                Por favor, ingrese su correo electrónico registrado en el
-                sistema
-            </p>
-        </div>
-
-        <div class="password-form">
-            <div class="input-group">
-                <label for="correo" class="vibrant-label"
-                    >Correo Electrónico</label
-                >
-                <input
-                    type="email"
-                    class="vibrant-input"
-                    placeholder="ejemplo@correo.com"
-                    id="correo"
-                    bind:value={vl_correo}
-                    required
-                />
+<div class="password-wrapper">
+    <div class="password-container">
+        <div class="password-card">
+            <div class="password-header">
+                <h2 class="password-title">Cambio de Contraseña</h2>
+                <p class="password-subtitle">
+                    Por favor, ingrese su correo electrónico registrado en el
+                    sistema
+                </p>
             </div>
 
-            <button on:click={buscar_correo} class="vibrant-button">
-                <i class="bi bi-send-fill"></i> ENVIAR CÓDIGO
-            </button>
+            <div class="password-form">
+                <div class="input-group">
+                    <label for="correo" class="vibrant-label"
+                        >Correo Electrónico</label
+                    >
+                    <input
+                        type="email"
+                        class="vibrant-input"
+                        placeholder="ejemplo@correo.com"
+                        id="correo"
+                        bind:value={vl_correo}
+                        required
+                    />
+                </div>
+
+                <button on:click={buscar_correo} class="vibrant-button">
+                    <i class="bi bi-send-fill"></i> ENVIAR CÓDIGO
+                </button>
+            </div>
         </div>
     </div>
 
@@ -231,13 +233,22 @@
 />
 
 <style>
-    /* ESTILOS VIBRANTES PARA CAMBIO DE CONTRASEÑA */
-    .password-container {
-        max-width: 600px;
-        margin: 2rem auto;
-        position: relative;
+    /* ESTILOS PARA CENTRAR EL FORMULARIO */
+    .password-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
     }
 
+    .password-container {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    /* ESTILOS VIBRANTES PARA CAMBIO DE CONTRASEÑA */
     .password-card {
         background: white;
         border-radius: 20px;
@@ -401,7 +412,6 @@
     @media (max-width: 768px) {
         .password-card {
             padding: 2rem 1.5rem;
-            margin: 1rem;
         }
 
         .password-title {
@@ -429,6 +439,10 @@
 
         .vibrant-loader {
             font-size: 2rem;
+        }
+
+        .password-wrapper {
+            padding: 15px;
         }
     }
 </style>
