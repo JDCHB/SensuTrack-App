@@ -168,7 +168,7 @@
         <!-- Links -->
         <div class="links">
             <div class="link-item">
-                <a href="/">Olvidaste la contraseña?</a>
+                <a href="/Cambio_Clave">Olvidaste la contraseña?</a>
             </div>
             <div class="link-item">
                 <a href="/">No tienes cuenta? Regístrate!!</a>
