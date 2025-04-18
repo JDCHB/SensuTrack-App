@@ -256,20 +256,6 @@
         z-index: 100; /* Asegúrate de que esté encima de otros elementos */
     }
 
-    /* Contenedor para el loader */
-    .loader-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.9);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 100;
-    }
-
     .loader-text {
         display: flex;
         font-size: 48px;
