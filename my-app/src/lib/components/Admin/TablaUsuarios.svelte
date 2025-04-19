@@ -564,10 +564,13 @@
     /* ESTILOS OPTIMIZADOS PARA MOBILE */
     .mobile-users-container {
         width: 100%;
-        padding: 1rem;
+        padding: 1.5rem;
         background: #fff;
         border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin: 1rem auto;
+        max-width: 1200px;
+        box-sizing: border-box; /* Añade esto para padding correcto */
     }
 
     .mobile-users-title {
@@ -582,10 +585,11 @@
         justify-content: center;
     }
 
-    /* Estilos para la barra de búsqueda */
+    /* Barra de búsqueda mejorada */
     .mobile-search-container {
         position: relative;
-        margin-bottom: 1.5rem;
+        margin: 1rem 0 1.5rem;
+        width: 100%;
     }
 
     .mobile-search-container i {
@@ -594,21 +598,37 @@
         top: 50%;
         transform: translateY(-50%);
         color: #6e48aa;
+        font-size: 1.1rem;
     }
 
     .mobile-search-input {
         width: 100%;
-        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        padding: 0.75rem 1rem 0.75rem 2.8rem;
         border: 2px solid #e0e0e0;
         border-radius: 8px;
         font-size: 1rem;
         transition: all 0.3s;
+        box-sizing: border-box; /* Añade esto */
     }
 
     .mobile-search-input:focus {
         border-color: #9d50bb;
         box-shadow: 0 0 0 3px rgba(157, 80, 187, 0.2);
         outline: none;
+    }
+
+    /* Ajustes para responsive */
+    @media (min-width: 768px) {
+        .mobile-search-container {
+            width: 70%;
+            margin: 1rem auto 1.5rem;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .mobile-search-container {
+            width: 50%;
+        }
     }
 
     /* Mensaje cuando no hay resultados (clase renombrada) */
