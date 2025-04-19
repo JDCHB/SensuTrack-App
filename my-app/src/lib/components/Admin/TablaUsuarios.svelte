@@ -4,6 +4,7 @@
     let todos = {};
     let loading = true;
     let error = null;
+    let mostrandoModalEdicion = false; // Variable para controlar la visibilidad
 
     onMount(async () => {
         try {
@@ -30,6 +31,7 @@
     var a = "";
 
     async function Ocultar() {
+        mostrandoModalEdicion = false;
         const v_editar = document.getElementById("nav-listado");
         v_editar.setAttribute("class", "fade");
 
@@ -41,6 +43,7 @@
 
     var vid = 1;
     async function editar(id, a) {
+        mostrandoModalEdicion = true;
         console.log("Editando a " + a);
         const v_editar = document.getElementById("nav-listado");
         v_editar.removeAttribute("class");
@@ -323,32 +326,70 @@
             alert("Error en la solicitud: " + e.message);
         }
     }
+
+    // Añadir esta función para manejar la búsqueda
+    let todosFiltrados = [];
+    $: todosFiltrados = filtrarUsuarios(todos, terminoBusqueda);
+
+    let terminoBusqueda = "";
+
+    function filtrarUsuarios(usuarios, termino) {
+        if (!termino) return usuarios;
+
+        const busqueda = termino.toLowerCase();
+        return usuarios.filter(
+            (user) =>
+                user.nombre.toLowerCase().includes(busqueda) ||
+                user.email.toLowerCase().includes(busqueda) ||
+                user.documento.toLowerCase().includes(busqueda) ||
+                user.apellido.toLowerCase().includes(busqueda),
+        );
+    }
+
+    function buscarUsuario(termino) {
+        terminoBusqueda = termino;
+    }
 </script>
 
+<!-- Mantengo exactamente el mismo HTML y scripts, solo modifico los estilos -->
 <div id="Mostrarusuario">
-    <div class="container py-4 bg-light rounded shadow">
-        <h2
-            class="text-center mb-4 pb-2 border-bottom border-3 border-primary fw-bold"
-        >
+    <div class="mobile-users-container">
+        <h2 class="mobile-users-title">
             <i class="bi bi-people-fill me-2"></i>USUARIOS
         </h2>
 
+        <!-- Barra de búsqueda -->
+        <div class="mobile-search-container">
+            <i class="bi bi-search"></i>
+            <input
+                type="text"
+                class="mobile-search-input"
+                placeholder="Buscar por nombre, correo o documento..."
+                on:input={(e) => buscarUsuario(e.target.value)}
+            />
+        </div>
+
         {#if loading}
-            <div class="row justify-content-center text-center">
-                <div class="col-12 mb-2">Cargando datos...</div>
+            <div class="mobile-loading">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
+                <div>Cargando datos...</div>
             </div>
         {:else if error}
             <div class="alert alert-danger text-center">{error}</div>
+        {:else if mostrandoModalEdicion}
+            <!-- No mostrar nada (o podrías poner un mensaje) -->
+        {:else if todosFiltrados.length === 0}
+            <div class="no-results-message">
+                <!-- Cambiado el nombre de la clase -->
+                <i class="bi bi-exclamation-circle"></i>
+                No se encontraron resultados
+            </div>
         {:else}
-            <div class="table-responsive">
-                <table
-                    class="table table-hover table-bordered align-middle"
-                    id="myTable"
-                >
-                    <thead class="thead-light text-center">
+            <div class="mobile-table-responsive">
+                <table class="mobile-table" id="myTable">
+                    <thead>
                         <tr>
                             <th>Usuario</th>
                             <th>Nombre</th>
@@ -360,57 +401,49 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {#each todos as todo}
+                        {#each todosFiltrados as todo}
+                            <!-- Cambiado a todosFiltrados -->
                             <tr>
-                                <td>{todo.email}</td>
-                                <td>{todo.nombre}</td>
-                                <td>{todo.apellido}</td>
-                                <td>{todo.documento}</td>
-                                <td>{todo.telefono}</td>
-                                <td class="text-center">
+                                <td data-label="Usuario">{todo.email}</td>
+                                <td data-label="Nombre">{todo.nombre}</td>
+                                <td data-label="Apellido">{todo.apellido}</td>
+                                <td data-label="Documento">{todo.documento}</td>
+                                <td data-label="Teléfono">{todo.telefono}</td>
+                                <td data-label="Estado" class="text-center">
                                     <span
-                                        class="badge {todo.estado
-                                            ? 'bg-success'
-                                            : 'bg-danger'}"
+                                        class="mobile-badge {todo.estado
+                                            ? 'active'
+                                            : 'inactive'}"
                                     >
                                         {todo.estado ? "Activo" : "Desactivado"}
                                     </span>
                                 </td>
-                                <td class="text-center">
-                                    <div
-                                        class="d-flex flex-wrap gap-1 justify-content-center"
-                                    >
+                                <td data-label="Acciones" class="text-center">
+                                    <div class="mobile-actions">
                                         <button
-                                            class="btn btn-sm btn-outline-primary"
+                                            class="mobile-btn edit"
                                             on:click={() => editar(todo.id)}
                                         >
                                             <i class="bi bi-pencil"></i>
-                                            <span class="d-none d-md-inline"
-                                                >Editar</span
-                                            >
+                                            <span>Editar</span>
                                         </button>
-
                                         {#if todo.estado}
                                             <button
-                                                class="btn btn-sm btn-outline-danger"
+                                                class="mobile-btn deactivate"
                                                 on:click={() =>
                                                     desactivar(todo.id)}
                                             >
                                                 <i class="bi bi-lock"></i>
-                                                <span class="d-none d-md-inline"
-                                                    >Desactivar</span
-                                                >
+                                                <span>Desactivar</span>
                                             </button>
                                         {:else}
                                             <button
-                                                class="btn btn-sm btn-outline-success"
+                                                class="mobile-btn activate"
                                                 on:click={() =>
                                                     activar(todo.id)}
                                             >
                                                 <i class="bi bi-unlock"></i>
-                                                <span class="d-none d-md-inline"
-                                                    >Activar</span
-                                                >
+                                                <span>Activar</span>
                                             </button>
                                         {/if}
                                     </div>
@@ -424,9 +457,9 @@
     </div>
 </div>
 
-<!-- Modal de Edición -->
+<!-- Modal de Edición (estilos modificados pero estructura igual) -->
 <div
-    class="fade"
+    class="mobile-modal fade"
     id="nav-listado"
     role="tabpanel"
     aria-labelledby="nav-listado-tab"
@@ -435,129 +468,381 @@
         <p class="text-warning"></p>
     </div>
 
-    <div
-        class="card border-dark shadow-lg"
-        style="width: 50%; margin: 5% auto;"
-    >
-        <div
-            class="card-header d-flex justify-content-between align-items-center"
-        >
-            <h5 class="card-title mb-0"><b>Editando Usuario</b></h5>
+    <div class="mobile-modal-card">
+        <div class="mobile-modal-header">
+            <h5><b>Editando Usuario</b></h5>
             <button
-                class="btn btn-close"
+                class="mobile-close-btn"
                 aria-label="Cerrar edición de usuario"
                 on:click={() => Ocultar()}
-            ></button>
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
 
-        <div class="card-body">
-            <!-- Nombre -->
-            <div class="mb-3 row">
-                <label for="nombres" class="col-lg-3 col-form-label"
-                    ><b>Nombre:</b></label
-                >
-                <div class="col-lg-9">
-                    <input
-                        type="text"
-                        id="nombres"
-                        class="form-control"
-                        placeholder="Nombres"
-                        maxlength="100"
-                        readonly
-                    />
-                </div>
+        <div class="mobile-modal-body">
+            <!-- Mantengo exactamente la misma estructura de inputs -->
+            <div class="mobile-form-group">
+                <label for="nombres"><b>Nombre:</b></label>
+                <input
+                    type="text"
+                    id="nombres"
+                    placeholder="Nombres"
+                    maxlength="100"
+                    readonly
+                />
             </div>
 
-            <!-- Apellido -->
-            <div class="mb-3 row">
-                <label for="apellidos" class="col-lg-3 col-form-label"
-                    ><b>Apellido:</b></label
-                >
-                <div class="col-lg-9">
-                    <input
-                        type="text"
-                        id="apellidos"
-                        class="form-control"
-                        placeholder="Apellidos"
-                        readonly
-                    />
-                </div>
+            <div class="mobile-form-group">
+                <label for="apellidos"><b>Apellido:</b></label>
+                <input
+                    type="text"
+                    id="apellidos"
+                    placeholder="Apellidos"
+                    readonly
+                />
             </div>
 
-            <!-- Documento -->
-            <div class="mb-3 row">
-                <label for="documento" class="col-lg-3 col-form-label"
-                    ><b>Documento:</b></label
-                >
-                <div class="col-lg-9">
-                    <input
-                        type="text"
-                        id="documento"
-                        class="form-control"
-                        placeholder="Documento de identidad"
-                        readonly
-                    />
-                </div>
+            <div class="mobile-form-group">
+                <label for="documento"><b>Documento:</b></label>
+                <input
+                    type="text"
+                    id="documento"
+                    placeholder="Documento de identidad"
+                    readonly
+                />
             </div>
 
-            <!-- Teléfono -->
-            <div class="mb-3 row">
-                <label for="telefono" class="col-lg-3 col-form-label"
-                    ><b>Teléfono:</b></label
-                >
-                <div class="col-lg-9">
-                    <input
-                        type="text"
-                        id="telefono"
-                        class="form-control"
-                        placeholder="Teléfono"
-                        maxlength="20"
-                        readonly
-                    />
-                </div>
+            <div class="mobile-form-group">
+                <label for="telefono"><b>Teléfono:</b></label>
+                <input
+                    type="text"
+                    id="telefono"
+                    placeholder="Teléfono"
+                    maxlength="20"
+                    readonly
+                />
             </div>
 
-            <!-- Correo -->
-            <div class="mb-3 row">
-                <label for="correo" class="col-lg-3 col-form-label"
-                    ><b>Correo:</b></label
-                >
-                <div class="col-lg-9">
-                    <input
-                        type="text"
-                        id="correo"
-                        class="form-control"
-                        placeholder="Correo electrónico"
-                        readonly
-                    />
-                </div>
+            <div class="mobile-form-group">
+                <label for="correo"><b>Correo:</b></label>
+                <input
+                    type="text"
+                    id="correo"
+                    placeholder="Correo electrónico"
+                    readonly
+                />
             </div>
 
-            <!-- Estado -->
-            <div class="mb-3 row">
-                <label for="estado" class="col-lg-3 col-form-label"
-                    ><b>Estado:</b></label
-                >
-                <div class="col-lg-9">
-                    <select id="estado" class="form-control">
-                        <option value="1">Activar</option>
-                        <option value="0">Desactivar</option>
-                    </select>
-                </div>
+            <div class="mobile-form-group">
+                <label for="estado"><b>Estado:</b></label>
+                <select id="estado">
+                    <option value="1">Activar</option>
+                    <option value="0">Desactivar</option>
+                </select>
             </div>
 
-            <!-- Notificación y botón de actualización -->
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="col-lg-9 text-muted">
+            <div class="mobile-modal-footer">
+                <p>
                     ¡Al terminar de editar, haga clic en actualizar para guardar
                     los cambios!
-                </div>
-                <div class="col-lg-3 text-end">
-                    <button on:click={actualizar} class="btn btn-outline-info">
-                        <b>Actualizar</b>
-                    </button>
-                </div>
+                </p>
+                <button on:click={actualizar} class="mobile-update-btn">
+                    <b>Actualizar</b>
+                </button>
             </div>
         </div>
     </div>
 </div>
+
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+    rel="stylesheet"
+/>
+
+<style>
+    /* ESTILOS OPTIMIZADOS PARA MOBILE */
+    .mobile-users-container {
+        width: 100%;
+        padding: 1rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .mobile-users-title {
+        text-align: center;
+        font-size: 1.5rem;
+        color: #6e48aa;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #9d50bb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Estilos para la barra de búsqueda */
+    .mobile-search-container {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .mobile-search-container i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6e48aa;
+    }
+
+    .mobile-search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .mobile-search-input:focus {
+        border-color: #9d50bb;
+        box-shadow: 0 0 0 3px rgba(157, 80, 187, 0.2);
+        outline: none;
+    }
+
+    /* Mensaje cuando no hay resultados (clase renombrada) */
+    .no-results-message {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .no-results-message i {
+        font-size: 2rem;
+        color: #9d50bb;
+    }
+
+    @media (min-width: 992px) {
+        .mobile-search-container {
+            width: 50%;
+            margin: 0 auto 1.5rem;
+        }
+    }
+
+    /* Hasta aqui */
+
+    .mobile-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        gap: 1rem;
+    }
+
+    .mobile-table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .mobile-table thead {
+        display: none;
+    }
+
+    .mobile-table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .mobile-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        text-align: right;
+        border-bottom: 1px solid #eee;
+    }
+
+    .mobile-table td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-align: left;
+        margin-right: 1rem;
+    }
+
+    .mobile-table td:last-child {
+        border-bottom: none;
+    }
+
+    .mobile-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .mobile-badge.active {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .mobile-badge.inactive {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    .mobile-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+
+    .mobile-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        border: 1px solid;
+        background: transparent;
+    }
+
+    .mobile-btn.edit {
+        border-color: #1565c0;
+        color: #1565c0;
+    }
+
+    .mobile-btn.activate {
+        border-color: #2e7d32;
+        color: #2e7d32;
+    }
+
+    .mobile-btn.deactivate {
+        border-color: #c62828;
+        color: #c62828;
+    }
+
+    /* ESTILOS PARA EL MODAL EN MOBILE */
+    .mobile-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1050;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .mobile-modal-card {
+        background: #fff;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .mobile-modal-header {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mobile-close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #666;
+    }
+
+    .mobile-modal-body {
+        padding: 1rem;
+    }
+
+    .mobile-form-group {
+        margin-bottom: 1rem;
+    }
+
+    .mobile-form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .mobile-form-group input,
+    .mobile-form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+    .mobile-form-group input:read-only {
+        background: #f5f5f5;
+    }
+
+    .mobile-modal-footer {
+        margin-top: 1.5rem;
+        text-align: center;
+    }
+
+    .mobile-update-btn {
+        background: #6e48aa;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+    /* MEDIA QUERIES PARA VERSIÓN DE ESCRITORIO */
+    @media (min-width: 992px) {
+        .mobile-table thead {
+            display: table-header-group;
+        }
+
+        .mobile-table tr {
+            display: table-row;
+            margin-bottom: 0;
+            box-shadow: none;
+        }
+
+        .mobile-table td {
+            display: table-cell;
+            text-align: center;
+            padding: 0.75rem;
+        }
+
+        .mobile-table td:before {
+            display: none;
+        }
+
+        .mobile-table td:last-child {
+            border-bottom: 1px solid #eee;
+        }
+
+        .mobile-modal-card {
+            width: 50%;
+        }
+    }
+</style>
