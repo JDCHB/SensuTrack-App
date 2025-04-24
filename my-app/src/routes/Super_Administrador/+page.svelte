@@ -63,18 +63,18 @@
         activeSection = "registro_modulos";
         menuAbierto = false;
     }
-    function mostrarRegistroModuloxRol() {
-        activeSection = "modulos_por_rol";
-        menuAbierto = false;
-    }
-    function mostrarTableroPowerBI() {
-        activeSection = "tablero";
-        menuAbierto = false;
-    }
-    function mostrarHistorialUbicaciones() {
-        activeSection = "historial_ubicaciones";
-        menuAbierto = false;
-    }
+    // function mostrarRegistroModuloxRol() {
+    //     activeSection = "modulos_por_rol";
+    //     menuAbierto = false;
+    // }
+    // function mostrarTableroPowerBI() {
+    //     activeSection = "tablero";
+    //     menuAbierto = false;
+    // }
+    // function mostrarHistorialUbicaciones() {
+    //     activeSection = "historial_ubicaciones";
+    //     menuAbierto = false;
+    // }
 </script>
 
 <div class="mobile-layout">
@@ -122,18 +122,18 @@
                 <i class="bi bi-stack"></i>
                 <span>Registrar Módulos</span>
             </button>
-            <button on:click={mostrarRegistroModuloxRol}>
+            <!-- <button on:click={mostrarRegistroModuloxRol}>
                 <i class="bi bi-shield-lock"></i>
                 <span>Asignar Módulo</span>
-            </button>
-            <button on:click={mostrarTableroPowerBI}>
+            </button> -->
+            <!-- <button on:click={mostrarTableroPowerBI}>
                 <i class="bi bi-graph-up"></i>
                 <span>Tablero</span>
             </button>
             <button on:click={mostrarHistorialUbicaciones}>
                 <i class="bi bi-map"></i>
                 <span>Ubicaciones</span>
-            </button>
+            </button> -->
             <button on:click={logout} class="logout">
                 <i class="bi bi-power"></i>
                 <span>Cerrar Sesión</span>
@@ -181,12 +181,12 @@
                 on:showLoader={showLoader}
                 on:hideLoader={hideLoader}
             ></RegistroModulos>
-        {:else if activeSection === "modulos_por_rol"}
-            <ModuloxRol></ModuloxRol>
-        {:else if activeSection === "tablero"}
+            <!-- {:else if activeSection === "modulos_por_rol"}
+            <ModuloxRol></ModuloxRol> -->
+            <!-- {:else if activeSection === "tablero"}
             <PowerBi></PowerBi>
         {:else if activeSection === "historial_ubicaciones"}
-            <HistorialUbi></HistorialUbi>
+            <HistorialUbi></HistorialUbi> -->
         {/if}
 
         <!-- Loader (se mantiene igual) -->

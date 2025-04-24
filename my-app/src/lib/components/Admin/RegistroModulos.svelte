@@ -392,65 +392,58 @@
     }
 </script>
 
-<div class="wrapper">
-    <div class="title small-title" style="color: dodgerblue;">
-        REGISTRO DE MODULOS
-    </div>
-    <form on:submit|preventDefault={RegisterModulo} class="class-form">
+<div class="form-wrapper">
+    <div class="form-title">REGISTRO DE MODULOS</div>
+    <form on:submit|preventDefault={RegisterModulo} class="vibrant-form">
         <input
-            class="form__input small-input"
+            class="vibrant-input"
             bind:value={v_nombre}
             placeholder="Nombre del Modulo"
             type="text"
             required
         />
         <input
-            class="form__input small-input"
+            class="vibrant-input"
             bind:value={v_descripcion}
             placeholder="Descripcion del Modulo"
             type="text"
             required
         />
         <input
-            class="form__input small-input"
+            class="vibrant-input"
             bind:value={v_ubicacion}
             placeholder="Ubicacion del Modulo"
             type="text"
             required
         />
         <input
-            class="form__input small-input"
+            class="vibrant-input"
             bind:value={v_estilo}
             placeholder="Ingrese el icono que tendra el Modulo (Boostrap)"
             type="text"
             required
         />
-        <button class="flip-card__btn small-btn">Confirmar</button>
+        <button class="vibrant-button">Confirmar</button>
     </form>
 </div>
 
 <div id="MostrarModulos">
-    <div class="container py-4 bg-light rounded shadow">
-        <h2
-            class="text-center mb-4 pb-2 border-bottom border-3 border-primary fw-bold"
-        >
-            <i class="bi-grid-3x3-gap-fill me-2"></i>Lista de Modulos
+    <div class="modulos-container">
+        <h2 class="roles-title">
+            <i class="bi bi-diagram-3"></i> Lista de Modulos
         </h2>
         {#if loading}
-            <div class="row justify-content-center text-center">
-                <div class="col-12 mb-2">Cargando datos...</div>
+            <div class="mobile-loading">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
+                <div>Cargando datos...</div>
             </div>
         {:else if error}
             <div class="alert alert-danger text-center">{error}</div>
         {:else}
-            <div class="table-responsive">
-                <table
-                    class="table table-hover table-bordered align-middle"
-                    id="myTable"
-                >
+            <div class="mobile-table-responsive">
+                <table class="mobile-table" id="myTable">
                     <thead>
                         <tr>
                             <th>Nombre</th>
@@ -463,52 +456,46 @@
                     <tbody>
                         {#each todos as todo}
                             <tr>
-                                <td>{todo.nombre}</td>
-                                <td>{todo.descripcion}</td>
-                                <td class="text-center">
+                                <td data-label="Nombre">{todo.nombre}</td>
+                                <td data-label="Descripción"
+                                    >{todo.descripcion}</td
+                                >
+                                <td data-label="Estado" class="text-center">
                                     <span
-                                        class="badge {todo.estado
-                                            ? 'bg-success'
-                                            : 'bg-danger'}"
+                                        class="mobile-badge {todo.estado
+                                            ? 'active'
+                                            : 'inactive'}"
                                     >
                                         {todo.estado ? "Activo" : "Desactivado"}
                                     </span>
                                 </td>
-                                <td class="text-center">
-                                    <div
-                                        class="d-flex flex-wrap gap-1 justify-content-center"
-                                    >
+                                <td data-label="Opciones" class="text-center">
+                                    <div class="mobile-actions">
                                         <button
-                                            class="btn btn-sm btn-outline-primary"
+                                            class="mobile-btn edit"
                                             on:click={() =>
                                                 editar(todo.id, todo.nombre)}
                                         >
                                             <i class="bi bi-pencil"></i>
-                                            <span class="d-none d-md-inline"
-                                                >Editar</span
-                                            >
+                                            <span>Editar</span>
                                         </button>
                                         {#if todo.estado}
                                             <button
-                                                class="btn btn-sm btn-outline-danger"
+                                                class="mobile-btn deactivate"
                                                 on:click={() =>
                                                     desactivar(todo.id)}
                                             >
                                                 <i class="bi bi-lock"></i>
-                                                <span class="d-none d-md-inline"
-                                                    >Desactivar</span
-                                                >
+                                                <span>Desactivar</span>
                                             </button>
                                         {:else}
                                             <button
-                                                class="btn btn-sm btn-outline-success"
+                                                class="mobile-btn activate"
                                                 on:click={() =>
                                                     activar(todo.id)}
                                             >
                                                 <i class="bi bi-unlock"></i>
-                                                <span class="d-none d-md-inline"
-                                                    >Activar</span
-                                                >
+                                                <span>Activar</span>
                                             </button>
                                         {/if}
                                     </div>
@@ -521,261 +508,416 @@
         {/if}
     </div>
 </div>
+<!-- Modal de Edición -->
 <div
-    class="fade"
+    class="mobile-modal fade"
     id="nav-listado"
     role="tabpanel"
     aria-labelledby="nav-listado-tab"
 >
-    <div class="container text-center">
-        <p class="text-orange"></p>
-    </div>
-    <div class="card border-dark shadow" style="width: 60%; margin-left: 20%;">
-        <div class="card-header row g-2">
-            <h5 class="card-title col-lg-11"><b>Editando Modulo</b></h5>
+    <div class="mobile-modal-card">
+        <div class="mobile-modal-header">
+            <h5><b>Editando Modulo</b></h5>
             <button
-                class="btn btn-close col-lg-1"
-                aria-label="Cerrar edición de usuario"
+                class="mobile-close-btn"
+                aria-label="Cerrar edición"
                 on:click={() => Ocultar()}
-            ></button>
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
-        <div class="card-body" style="margin-left: 10%;">
-            <div class="row">
-                <div class="col-lg-2">
-                    <p class="card-text"><b>Nombre:</b></p>
-                </div>
-
-                <div class="col-lg-10">
-                    <input
-                        type="text"
-                        placeholder="Nombre del Modulo"
-                        id="nombre"
-                        maxlength="100"
-                        style="border: none; width: 55%;"
-                        readonly
-                    />
-                </div>
+        <div class="mobile-modal-body">
+            <div class="mobile-form-group">
+                <label for="nombre"><b>Nombre:</b></label>
+                <input
+                    type="text"
+                    id="nombre"
+                    placeholder="Nombre del Rol"
+                    maxlength="100"
+                    readonly
+                />
             </div>
 
-            <div class="row pt-3">
-                <div class="col-lg-2">
-                    <p class="card-text"><b>Descripcion:</b></p>
-                </div>
-
-                <div class="col-lg-10">
-                    <input
-                        type="text"
-                        placeholder="Descripcion del Modulo"
-                        id="descripcion"
-                        style="border: none; width: 55%;"
-                        readonly
-                    />
-                </div>
+            <div class="mobile-form-group">
+                <label for="descripcion"><b>Descripcion:</b></label>
+                <input
+                    type="text"
+                    id="descripcion"
+                    placeholder="Descripcion del Modulo"
+                    maxlength="100"
+                    readonly
+                />
             </div>
 
-            <div class="row pt-3">
-                <div class="col-lg-2">
-                    <p class="card-text"><b>Ubicación:</b></p>
-                </div>
-
-                <div class="col-lg-10">
-                    <input
-                        type="text"
-                        placeholder="Descripcion del Modulo"
-                        id="ubicacion"
-                        style="border: none; width: 55%;"
-                        readonly
-                    />
-                </div>
+            <div class="mobile-form-group">
+                <label for="ubicacion"><b>Ubicación:</b></label>
+                <input
+                    type="text"
+                    id="ubicacion"
+                    placeholder="Ubicación del Modulo"
+                    maxlength="100"
+                    readonly
+                />
             </div>
 
-            <div class="row pt-3">
-                <div class="col-lg-2">
-                    <p class="card-text"><b>Estilo:</b></p>
-                </div>
-
-                <div class="col-lg-10">
-                    <input
-                        type="text"
-                        placeholder="Descripcion del Modulo"
-                        id="estilo"
-                        style="border: none; width: 55%;"
-                        readonly
-                    />
-                </div>
+            <div class="mobile-form-group">
+                <label for="estilo"><b>Estilo:</b></label>
+                <input
+                    type="text"
+                    id="estilo"
+                    placeholder="Ingrese el icono que tendra el Modulo (Boostrap)"
+                    maxlength="100"
+                    readonly
+                />
             </div>
 
-            <div class="row pt-3">
-                <div class="col-lg-2">
-                    <p class="card-text"><b>Estado:</b></p>
-                </div>
-                <div class="col-lg-10">
-                    <select
-                        id="estado"
-                        name="opciones"
-                        style="border: none; width: 55%;"
-                    >
-                        <option value="1">Activar</option>
-                        <option value="0">Desactivar</option>
-                    </select>
-                </div>
+            <!-- Estado -->
+            <div class="mobile-form-group">
+                <label for="estado"><b>Estado:</b></label>
+                <select id="estado">
+                    <option value="1">Activar</option>
+                    <option value="0">Desactivar</option>
+                </select>
             </div>
 
-            <div class="row" style="margin-top: 4%;">
-                <div class="col-lg-9">
-                    ¡Al terminar de editar, darle click en actualizar para
-                    guardar los cambios!
-                </div>
-                <div class="col-lg-3 text-end">
-                    <button on:click={actualizar} class="btn btn-outline-info"
-                        ><b>Actualizar</b></button
-                    >
-                </div>
-                <div id="estado" class="col-lg-10"></div>
+            <div class="mobile-modal-footer">
+                <p>
+                    ¡Al terminar de editar, haga clic en actualizar para guardar
+                    los cambios!
+                </p>
+                <button on:click={actualizar} class="mobile-update-btn">
+                    <b>Actualizar</b>
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    /* Contenedor principal */
-    .wrapper {
+    /* FORMULARIO CON ESTILO VIBRANTE */
+    .form-wrapper {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(110, 72, 170, 0.2);
+    }
+
+    .form-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 2rem;
+        background: linear-gradient(90deg, #6e48aa, #9d50bb);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .vibrant-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .vibrant-input {
+        padding: 1rem 1.2rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .vibrant-input:focus {
+        border-color: #9d50bb;
+        box-shadow: 0 0 0 3px rgba(157, 80, 187, 0.2);
+        outline: none;
+        background: white;
+        transform: translateY(-2px);
+    }
+
+    .vibrant-input::placeholder {
+        color: #a0a0a0;
+    }
+
+    .vibrant-button {
+        background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+        color: white;
+        border: none;
+        padding: 1.2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 1rem;
+        box-shadow: 0 4px 15px rgba(110, 72, 170, 0.3);
+    }
+
+    .vibrant-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(110, 72, 170, 0.4);
+    }
+
+    .vibrant-button:active {
+        transform: translateY(-1px);
+    }
+
+    /* Efecto para campos inválidos */
+    .vibrant-input:invalid:not(:placeholder-shown) {
+        border-color: #ff4757;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+        .form-wrapper {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+        }
+
+        .vibrant-input {
+            padding: 0.9rem;
+        }
+    }
+
+    /* Hasta aqui */
+
+    .mobile-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        gap: 1rem;
+    }
+    /* TABLA Y MODAL */
+
+    /* ESTILOS GENERALES */
+    .modulos-container {
         width: 100%;
-        max-width: 700px;
-        margin: 60px auto;
-        padding: 40px;
-        background-color: #fff;
-        border-radius: 15px;
-        border: 1px solid #e2e6e9;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        background-image: linear-gradient(135deg, #f3f4f8, #ffffff);
-        position: relative;
+        padding: 1.5rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin: 1rem auto;
+        max-width: 1200px;
+    }
+
+    .roles-title {
+        color: #6e48aa;
+        text-align: center;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #d1c4e9;
+    }
+
+    /* TABLA */
+    .mobile-table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .mobile-table thead {
+        display: none;
+    }
+
+    .mobile-table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         overflow: hidden;
     }
 
-    /* Título */
-    .title {
-        font-size: 2.5em;
-        font-weight: bold;
-        color: #4b4f58;
-        text-align: center;
-        margin-bottom: 30px;
-        font-family: "Roboto", sans-serif;
-        letter-spacing: -0.5px;
-    }
-
-    /* Subtítulo */
-    .small-title {
-        font-size: 1.6em;
-        color: #6c757d;
-        text-align: center;
-        font-family: "Roboto", sans-serif;
-        margin-bottom: 20px;
-    }
-
-    /* Estilos generales del formulario */
-    .class-form {
+    .mobile-table td {
         display: flex;
-        flex-direction: column;
-        gap: 24px;
+        justify-content: space-between;
+        padding: 0.75rem;
+        text-align: right;
+        border-bottom: 1px solid #eee;
     }
 
-    /* Estilo de los inputs */
-    .form__input {
-        padding: 14px 18px;
-        font-size: 1.05em;
-        color: #495057;
-        background-color: #f7f8fa;
-        border: 1px solid #d0d4db;
-        border-radius: 10px;
-        transition: all 0.3s ease-in-out;
-        position: relative;
-        box-sizing: border-box;
-    }
-
-    /* Estilo de los inputs al hacer foco */
-    .form__input:focus {
-        outline: none;
-        border-color: #17a2b8;
-        background-color: #ffffff;
-        box-shadow: 0 0 8px rgba(23, 162, 184, 0.5);
-    }
-
-    /* Placeholder en los inputs */
-    .form__input::placeholder {
-        color: #9b9b9b;
-        font-size: 1.1em;
-    }
-
-    /* Campos con tamaño reducido */
-    .small-input {
-        font-size: 0.95em;
-    }
-
-    /* Botón de acción */
-    .flip-card__btn {
-        padding: 16px 24px;
-        background-color: #17a2b8; /* Azul fresco */
-        color: white;
-        font-size: 1.15em;
+    .mobile-table td:before {
+        content: attr(data-label);
         font-weight: bold;
-        text-transform: uppercase;
+        text-align: left;
+        margin-right: 1rem;
+    }
+
+    .mobile-table td:last-child {
+        border-bottom: none;
+    }
+
+    /* BADGES */
+    .mobile-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .mobile-badge.active {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .mobile-badge.inactive {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    /* BOTONES DE ACCIÓN */
+    .mobile-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+
+    .mobile-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        border: 1px solid;
+        background: transparent;
+    }
+
+    .mobile-btn.edit {
+        border-color: #1565c0;
+        color: #1565c0;
+    }
+
+    .mobile-btn.activate {
+        border-color: #2e7d32;
+        color: #2e7d32;
+    }
+
+    .mobile-btn.deactivate {
+        border-color: #c62828;
+        color: #c62828;
+    }
+
+    /* MODAL */
+    .mobile-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1050;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .mobile-modal-card {
+        background: #fff;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .mobile-modal-header {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mobile-close-btn {
+        background: none;
         border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        transition:
-            background-color 0.3s ease-in-out,
-            transform 0.3s ease;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        font-size: 1.5rem;
+        color: #666;
+    }
+
+    .mobile-modal-body {
+        padding: 1rem;
+    }
+
+    .mobile-form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .mobile-form-group label {
+        display: block;
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+    }
+
+    .mobile-form-group input,
+    .mobile-form-group select {
         width: 100%;
-        letter-spacing: 0.5px;
+        padding: 0.75rem;
+        border: 2px solid #ddd;
+        border-radius: 8px;
     }
 
-    /* Hover para el botón */
-    .flip-card__btn:hover {
-        background-color: #138496;
-        transform: translateY(-4px);
+    /* BOTÓN ACTUALIZAR */
+    .mobile-update-btn {
+        background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: bold;
+        width: 100%;
     }
 
-    /* Efecto al hacer clic */
-    .flip-card__btn:active {
-        transform: translateY(2px);
-    }
-
-    /* Estilo para el fondo del formulario */
-    .wrapper {
-        background-color: #fafafa;
-        background-image: radial-gradient(circle, #f3f4f8, #ffffff);
-    }
-
-    /* Bordes y sombras sutiles para los inputs */
-    .form__input {
-        border: 1px solid #d0d4db;
-        box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Foco en los inputs */
-    .form__input:focus {
-        box-shadow: 0 0 10px rgba(23, 162, 184, 0.5);
-    }
-
-    /* Diseño responsivo */
-    @media screen and (max-width: 600px) {
-        .wrapper {
-            padding: 20px;
+    /* RESPONSIVE */
+    @media (min-width: 992px) {
+        .mobile-table thead {
+            display: table-header-group;
+            background: #f3e5f5;
         }
 
-        .title {
-            font-size: 1.8em;
+        .mobile-table tr {
+            display: table-row;
+            margin-bottom: 0;
+            box-shadow: none;
         }
 
-        .form__input {
-            padding: 12px;
+        .mobile-table td {
+            display: table-cell;
+            text-align: center;
+            padding: 0.75rem;
         }
 
-        .flip-card__btn {
-            font-size: 1em;
-            padding: 14px 20px;
+        .mobile-table td:before {
+            display: none;
+        }
+
+        .mobile-modal-card {
+            width: 60%;
         }
     }
 </style>
