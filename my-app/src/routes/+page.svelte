@@ -170,9 +170,9 @@
             <div class="link-item">
                 <a href="/Cambio_Clave">Olvidaste la contraseña?</a>
             </div>
-            <div class="link-item">
+            <!-- <div class="link-item">
                 <a href="/">No tienes cuenta? Regístrate!!</a>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

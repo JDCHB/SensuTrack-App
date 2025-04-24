@@ -1,4 +1,5 @@
 <script>
+    import { goto } from "$app/navigation";
     const serviceID = "service_j9bousa";
     const templateID = "template_zszjdla";
     const apikey = "dFD1OdFitzwQblEX0";
@@ -177,6 +178,11 @@
     }
 </script>
 
+<!-- Botón de ir al login -->
+<button on:click={() => goto("/")} class="vibrant-button login-button">
+    <i class="bi bi-box-arrow-in-left"></i> VOLVER
+</button>
+
 <div class="password-wrapper">
     <div class="password-container">
         <div class="password-card">
@@ -233,6 +239,15 @@
 />
 
 <style>
+    .login-button {
+        background: linear-gradient(135deg, #4776e6 0%, #8e54e9 100%);
+        margin-top: 0.5rem;
+    }
+
+    .login-button:hover {
+        background: linear-gradient(135deg, #5b86e5 0%, #7f59e5 100%);
+    }
+
     /* ESTILOS PARA CENTRAR EL FORMULARIO */
     .password-wrapper {
         display: flex;
