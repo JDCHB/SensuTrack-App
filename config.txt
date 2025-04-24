@@ -63,6 +63,7 @@ npx cap open android
 
 
 
+
 Ahora dentro de open android:
 tools, device manager, 
 create device

@@ -1,4 +1,5 @@
 <script>
+    import { goto } from "$app/navigation";
     // Mantengo exactamente los mismos imports y funciones del script original
     import RegistroUSUAdmin from "../../lib/components/Admin/RegistroUsu.svelte";
     import Reportes from "../../lib/components/Admin/Reportes.svelte";
@@ -30,7 +31,7 @@
 
     function logout() {
         localStorage.clear();
-        window.location.href = "/";
+        goto("/");
     }
 
     // Acciones disponibles (igual que antes)
